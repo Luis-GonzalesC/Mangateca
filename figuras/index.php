@@ -9,7 +9,7 @@
         error_reporting( E_ALL );
         ini_set( "display_errors", 1);
 
-        require('util/conexion.php');//Importando la conexion php del servidor (BBDD)
+        require('../util/conexion.php');//Importando la conexion php del servidor (BBDD)
 
         session_start(); //Para recuperar lo que sea iniciado porque no podemos acceder a ese valor
     ?>
@@ -27,7 +27,6 @@
                 <h2>Bienvenid@ <?php echo $_SESSION["usuario"] ?></h2>
                 <a class ="btn btn-danger" href="usuarios/cerrar_sesion.php">Cerrar Sesión</a> <br><br>
                 <a class ="btn btn-info" href="colecciones/coleccion.php">Coleccion</a>
-                <a class ="btn btn-info" href="figuras/index.php">Figura</a>
         <?php }else{ ?>
                 <a class ="btn btn-danger" href="usuarios/iniciar_sesion.php">Iniciar Sesión</a>
         <?php }
@@ -39,6 +38,9 @@
             $resultado = $_conexion -> query($sql); // => Devuelve un objeto
 
         ?>
+
+        <a class="btn btn-primary" href="nueva_figura.php">Nueva Figura</a>
+
         <table class="table table-striped">
             <thead class="table-primary">
                 <tr>
@@ -59,6 +61,15 @@
                         echo "<td>". $fila["precio"] ."</td>"; ?>
                         <td>
                             <img src="<?php echo $fila["imagen"] ?>" class="imagen">
+                        </td>
+                        <td>
+                            <a class="btn btn-primary" href="editar_figura.php?id=<?php echo $fila["id"] ?>">EDITAR</a>
+                        </td>
+                        <td>
+                            <form action="" method="post">
+                                <input type="hidden" name="id" value="<?php echo $fila["id"] ?>">
+                                <input class="btn btn-danger" type="submit" value="Borrar">
+                            </form>
                         </td>
                 <?php   echo "</tr>";
                     } ?>

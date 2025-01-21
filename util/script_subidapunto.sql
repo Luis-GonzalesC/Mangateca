@@ -14,6 +14,8 @@ CREATE TABLE fabricante(
     pais VARCHAR(30)
 );
 
+INSERT INTO fabricante (nombre, pais) VALUES ("Bandai", "Japon");
+
 CREATE TABLE figuras(
 	id INT PRIMARY KEY AUTO_INCREMENT,
     nombre_figura VARCHAR(100),
@@ -24,6 +26,9 @@ CREATE TABLE figuras(
     imagen VARCHAR(60),
 	CONSTRAINT FK_FIGURA_FABRICANTE FOREIGN KEY (id_fabricante) REFERENCES fabricante(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+INSERT INTO figuras (nombre_figura, nombre_anime, id_fabricante, tipo_figura, precio, imagen)
+	VALUES("Kakashi", "Naruto", 1, "LA CHIQUITA", 50, "imagenes/quefrio.jpg");
 
 CREATE TABLE coleccion(
 	id_usuario INT,
