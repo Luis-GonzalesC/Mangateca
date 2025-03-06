@@ -8,40 +8,33 @@ CREATE TABLE usuarios(
     contrasenia VARCHAR(255)
 );
 
-CREATE TABLE fabricante(
+CREATE TABLE autor(
 	id INT PRIMARY KEY AUTO_INCREMENT,
-    nombre VARCHAR(60),
-    pais VARCHAR(30)
+    nombre VARCHAR(100)
 );
 
-INSERT INTO fabricante (nombre, pais) VALUES ("Bandai", "Japon");
-
-CREATE TABLE figuras(
+CREATE TABLE mangas(
 	id INT PRIMARY KEY AUTO_INCREMENT,
-    nombre_figura VARCHAR(100),
-    nombre_anime VARCHAR(100),
-    id_fabricante INT,
-    tipo_figura VARCHAR(50),
-    precio INT,
-    imagen VARCHAR(60),
-	CONSTRAINT FK_FIGURA_FABRICANTE FOREIGN KEY (id_fabricante) REFERENCES fabricante(id) ON DELETE CASCADE ON UPDATE CASCADE
+    titulo VARCHAR(100),
+    id_autor INT,
+    capitulos INT,
+    volumenes INT,
+    score INT,
+	CONSTRAINT FK_MANGA_AUTOR FOREIGN KEY (id_autor) REFERENCES autor(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
-
-INSERT INTO figuras (nombre_figura, nombre_anime, id_fabricante, tipo_figura, precio, imagen)
-	VALUES("Kakashi", "Naruto", 1, "LA CHIQUITA", 50, "imagenes/quefrio.jpg");
 
 CREATE TABLE coleccion(
 	id_usuario INT,
-	id_figura INT,
+	id_manga INT,
     fecha_conseguida DATE,
 	CONSTRAINT FK_COLECCION_USUARIO FOREIGN KEY (id_usuario) REFERENCES usuarios(id) ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT FK_COLECCION_FIGURA FOREIGN KEY (id_figura) REFERENCES figuras(id) ON DELETE CASCADE ON UPDATE CASCADE
+	CONSTRAINT FK_COLECCION_MANGA FOREIGN KEY (id_manga) REFERENCES mangas(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE favoritos(
 	id INT PRIMARY KEY AUTO_INCREMENT,
 	id_usuario INT,
-    id_figura INT,
+    id_manga INT,
     CONSTRAINT FK_FAVORITO_USUARIO FOREIGN KEY (id_usuario) REFERENCES usuarios(id) ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT FK_FAVORITO_FIGURA FOREIGN KEY (id_figura) REFERENCES figuras(id) ON DELETE CASCADE ON UPDATE CASCADE
+	CONSTRAINT FK_FAVORITO_MANGA FOREIGN KEY (id_manga) REFERENCES mangas(id) ON DELETE CASCADE ON UPDATE CASCADE
 );

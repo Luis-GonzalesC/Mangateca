@@ -32,38 +32,33 @@
         <?php }
         ?>
         
-        <h2>Listado de Figuras</h2>
+        <h2>Listado de Mangas</h2>
         <?php
-            $sql =  "SELECT * FROM figuras";
+            $sql =  "SELECT * FROM mangas";
             $resultado = $_conexion -> query($sql); // => Devuelve un objeto
-
         ?>
 
-        <a class="btn btn-primary" href="nueva_figura.php">Nueva Figura</a>
+        <a class="btn btn-primary" href="nuevo_manga.php">Nuevo Manga</a>
 
         <table class="table table-striped">
             <thead class="table-primary">
                 <tr>
-                    <th>Nombre de la Figura</th>
-                    <th>Nombre del Anime</th>
-                    <th>Tipo de Figura</th>
-                    <th>Precio</th>
-                    <th>Imagen</th>
+                    <th>Nombre del Manga</th>
+                    <th>Capitulos</th>
+                    <th>Tomos</th>
+                    <th>Score</th>
                 </tr>
             </thead>
             <tbody>
                 <?php
                     while($fila = $resultado -> fetch_assoc()){
                         echo "<tr>";
-                        echo "<td>". $fila["nombre_figura"] ."</td>";
-                        echo "<td>". $fila["nombre_anime"] ."</td>";
-                        echo "<td>". $fila["tipo_figura"] ."</td>";
-                        echo "<td>". $fila["precio"] ."</td>"; ?>
+                        echo "<td>". $fila["titulo"] ."</td>";
+                        echo "<td>". $fila["capitulos"] ."</td>";
+                        echo "<td>". $fila["volumenes"] ."</td>";
+                        echo "<td>". $fila["score"] ."</td>"; ?>
                         <td>
-                            <img src="<?php echo $fila["imagen"] ?>" class="imagen">
-                        </td>
-                        <td>
-                            <a class="btn btn-primary" href="editar_figura.php?id=<?php echo $fila["id"] ?>">EDITAR</a>
+                            <a class="btn btn-primary" href="editar_manga.php?id=<?php echo $fila["id"] ?>">EDITAR</a>
                         </td>
                         <td>
                             <form action="" method="post">
