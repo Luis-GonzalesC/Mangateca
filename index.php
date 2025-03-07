@@ -30,36 +30,32 @@
                 <a class ="btn btn-info" href="figuras/index.php">Figura</a>
         <?php }else{ ?>
                 <a class ="btn btn-danger" href="usuarios/iniciar_sesion.php">Iniciar Sesión</a>
-        <?php }
-        ?>
+        <?php } ?>
         
         <h2>Listado de Figuras</h2>
         <?php
-            $sql =  "SELECT * FROM mangas";
-            $resultado = $_conexion -> query($sql); // => Devuelve un objeto
+           $url = "https://api.jikan.moe/v4/manga";//Link de la conexion
+
+           $curl = curl_init();//Iniciar la conexion
+           curl_setopt($curl, CURLOPT_URL, $url); //Accedemos a la url
+           curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);//Cuando acceda, que me de ese fichero
+           $respuesta = curl_exec($curl);//Ejecutamos
+           curl_close($curl);//Cerramos el curl
+           $datos = json_decode($respuesta, true);
+           $mangas = $datos["data"];
 
         ?>
-        <table class="table table-striped">
-            <thead class="table-primary">
-                <tr>
-                    <th>Nombre del Manga</th>
-                    <th>Capitulos</th>
-                    <th>Tomos</th>
-                    <th>Score</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                    while($fila = $resultado -> fetch_assoc()){
-                        echo "<tr>";
-                        echo "<td>". $fila["titulo"] ."</td>";
-                        echo "<td>". $fila["capitulos"] ."</td>";
-                        echo "<td>". $fila["volumenes"] ."</td>";
-                        echo "<td>". $fila["score"] ."</td>";
-                        echo "</tr>";
-                } ?>
-            </tbody>
-        </table>
+        <div class="row">
+            <?php 
+                foreach ($mangas as $manga) { ?>
+                    <div class="col-3 card" style="width: 18rem;">
+                        <img class="card-img-top" src="<?php echo $manga["images"]["jpg"]["image_url"];?>" alt="<?php echo $manga["titles"][0]["title"]?>">
+                        <div class="card-body">
+                            <p class="card-text"><?php echo $manga["titles"][0]["title"]?></p>
+                        </div>
+                    </div>
+            <?php } ?>
+        </div>
 
     </div>
 

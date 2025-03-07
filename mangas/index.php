@@ -33,10 +33,6 @@
         ?>
         
         <h2>Listado de Mangas</h2>
-        <?php
-            $sql =  "SELECT * FROM mangas";
-            $resultado = $_conexion -> query($sql); // => Devuelve un objeto
-        ?>
 
         <a class="btn btn-primary" href="nuevo_manga.php">Nuevo Manga</a>
 
@@ -50,24 +46,6 @@
                 </tr>
             </thead>
             <tbody>
-                <?php
-                    while($fila = $resultado -> fetch_assoc()){
-                        echo "<tr>";
-                        echo "<td>". $fila["titulo"] ."</td>";
-                        echo "<td>". $fila["capitulos"] ."</td>";
-                        echo "<td>". $fila["volumenes"] ."</td>";
-                        echo "<td>". $fila["score"] ."</td>"; ?>
-                        <td>
-                            <a class="btn btn-primary" href="editar_manga.php?id=<?php echo $fila["id"] ?>">EDITAR</a>
-                        </td>
-                        <td>
-                            <form action="" method="post">
-                                <input type="hidden" name="id" value="<?php echo $fila["id"] ?>">
-                                <input class="btn btn-danger" type="submit" value="Borrar">
-                            </form>
-                        </td>
-                <?php   echo "</tr>";
-                    } ?>
             </tbody>
         </table>
 
