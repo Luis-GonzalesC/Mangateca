@@ -13,12 +13,7 @@
 
         session_start(); //Para recuperar lo que sea iniciado porque no podemos acceder a ese valor
     ?>
-    <style>
-        .imagen{
-            width: 100px;
-            height: 100px;
-        }
-    </style>
+    <link rel="stylesheet" href="estilos/inicio.css">
 </head>
 <body>
     <div class="container">
@@ -31,10 +26,42 @@
         <?php }else{ ?>
                 <a class ="btn btn-danger" href="usuarios/iniciar_sesion.php">Iniciar Sesión</a>
         <?php } ?>
-        
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">Navbar</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="#">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Link</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Dropdown</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Action</a></li>
+                                <li><a class="dropdown-item" href="#">Another action</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
         <h2>Listado de Figuras</h2>
         <?php
-           $url = "https://api.jikan.moe/v4/manga";//Link de la conexion
+            if(!isset($_GET["page"])) $pagina = 1;
+            else $pagina = $_GET["page"];
+
+           $url = "https://api.jikan.moe/v4/manga?page=$pagina";//Link de la conexion
 
            $curl = curl_init();//Iniciar la conexion
            curl_setopt($curl, CURLOPT_URL, $url); //Accedemos a la url
@@ -42,19 +69,60 @@
            $respuesta = curl_exec($curl);//Ejecutamos
            curl_close($curl);//Cerramos el curl
            $datos = json_decode($respuesta, true);
-           $mangas = $datos["data"];
+           $mangas = $datos;
+
+           $existe_pagina = $mangas["pagination"]["has_next_page"];
 
         ?>
-        <div class="row">
+        <div class="row text-center">
             <?php 
-                foreach ($mangas as $manga) { ?>
-                    <div class="col-3 card" style="width: 18rem;">
-                        <img class="card-img-top" src="<?php echo $manga["images"]["jpg"]["image_url"];?>" alt="<?php echo $manga["titles"][0]["title"]?>">
+                foreach ($mangas["data"] as $manga) { ?>
+                    <div class="col-3 card m-1" style="width: 19rem;">
+                        <a href="mangas/index.php?id_manga=<?php echo $manga["mal_id"]?>">
+                            <img class="card-img-top" src="<?php echo $manga["images"]["jpg"]["image_url"];?>" alt="<?php echo $manga["titles"][0]["title"]?>">
+                        </a>
                         <div class="card-body">
-                            <p class="card-text"><?php echo $manga["titles"][0]["title"]?></p>
+                            <h3 class="card-text"><?php echo $manga["titles"][0]["title"]?></h3>
                         </div>
                     </div>
             <?php } ?>
+        </div>
+
+        
+        <div class="button-container">
+        <?php 
+            $siguiente = $pagina + 1;
+            $atras = $pagina - 1;
+            
+            if($existe_pagina){ ?>
+                <?php if($pagina != 1){ ?>
+                    <a class="button-3d" href="index.php?page=<?php echo $atras ?>">
+                        <div class="button-top">
+                            <span class="material-icons">❮</span>
+                        </div>
+                        <div class="button-bottom"></div>
+                        <div class="button-base"></div>
+                    </a>
+                <?php } ?>
+                    <a class="button-3d" href="index.php?page=<?php echo $siguiente ?>">
+                        <div class="button-top">
+                            <span class="material-icons">❯</span>
+                        </div>
+                        <div class="button-bottom"></div>
+                        <div class="button-base"></div>
+                    </a>
+        <?php
+            } else{ ?>
+                <a class="button-3d" href="index.php?page=<?php echo $atras ?>">
+                    <div class="button-top">
+                        <span class="material-icons">❮</span>
+                    </div>
+                    <div class="button-bottom"></div>
+                    <div class="button-base"></div>
+                </a>
+        <?php
+            }
+        ?>
         </div>
 
     </div>

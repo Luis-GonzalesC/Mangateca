@@ -30,24 +30,72 @@
         <?php }else{ ?>
                 <a class ="btn btn-danger" href="usuarios/iniciar_sesion.php">Iniciar Sesión</a>
         <?php }
+            //Recibiendo el ID del manga
+            $id_manga = $_GET["id_manga"];
+
+            $url = "https://api.jikan.moe/v4/manga/$id_manga";//Link de la conexion
+
+            $curl = curl_init();//Iniciar la conexion
+            curl_setopt($curl, CURLOPT_URL, $url); //Accedemos a la url
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);//Cuando acceda, que me de ese fichero
+            $respuesta = curl_exec($curl);//Ejecutamos
+            curl_close($curl);//Cerramos el curl
+            $datos = json_decode($respuesta, true);
+            $manga = $datos["data"];
         ?>
-        
-        <h2>Listado de Mangas</h2>
 
-        <a class="btn btn-primary" href="nuevo_manga.php">Nuevo Manga</a>
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="../index.php">Inicio</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="#">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Link</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Dropdown</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Action</a></li>
+                                <li><a class="dropdown-item" href="#">Another action</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
 
-        <table class="table table-striped">
-            <thead class="table-primary">
-                <tr>
-                    <th>Nombre del Manga</th>
-                    <th>Capitulos</th>
-                    <th>Tomos</th>
-                    <th>Score</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+        <div class="card mb-3 p-5" style="max-width: auto;">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img src="<?php echo $manga["images"]["jpg"]["image_url"] ?>" class="img-fluid rounded-start" alt="<?php echo $manga["titles"][0]["title"]?>">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h2 class="card-title"><?php echo $manga["titles"][0]["title"]?></h2>
+                        <p class="card-text"><?php echo $manga["synopsis"]?></p>
+                        <p class="card-text"><small class="text-body-secondary"><?php echo $manga["published"]["string"]?></small></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">Autor</h5>
+                    <h6 class="card-subtitle mb-2 text-body-secondary"><?php echo $manga["authors"][0]["name"]?></h6>
+                    <p class="card-text">Publicación: <?php echo $manga["serializations"][0]["name"]?></p>
+                    <a href="#" class="card-link">Another link</a>
+                </div>
+            </div>
+
+        </div>
 
     </div>
 
