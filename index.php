@@ -26,6 +26,7 @@
         <?php }else{ ?>
                 <a class ="btn btn-danger" href="usuarios/iniciar_sesion.php">Iniciar Sesión</a>
         <?php } ?>
+        <!-- Barra de navegación -->
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
                 <a class="navbar-brand" href="#">Navbar</a>
@@ -48,9 +49,6 @@
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="#">Something else here</a></li>
                             </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link disabled" aria-disabled="true">Disabled</a>
                         </li>
                     </ul>
                 </div>
@@ -75,7 +73,7 @@
 
         ?>
         <div class="row text-center">
-            <?php 
+            <?php
                 foreach ($mangas["data"] as $manga) { ?>
                     <div class="col-3 card m-1" style="width: 19rem;">
                         <a href="mangas/index.php?id_manga=<?php echo $manga["mal_id"]?>&page=<?php echo $pagina ?>">
@@ -84,6 +82,12 @@
                         <div class="card-body">
                             <h3 class="card-text"><?php echo $manga["titles"][0]["title"]?></h3>
                         </div>
+                        <?php if(isset($_SESSION["usuario"])){ ?>
+                            <form action="" method="get">
+                                
+                                <input type="submit" value="Agregar">
+                            </form>
+                        <?php } ?>
                     </div>
             <?php } ?>
         </div>
