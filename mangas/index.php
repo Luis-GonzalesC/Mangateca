@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <title>Index de la Biblioteca</title>
+    <title>Index de los Mangas</title>
+    <link rel="stylesheet" href="../estilos/mangas.css">
     <?php
         error_reporting( E_ALL );
         ini_set( "display_errors", 1);
@@ -13,25 +14,21 @@
 
         session_start(); //Para recuperar lo que sea iniciado porque no podemos acceder a ese valor
     ?>
-    <style>
-        .imagen{
-            width: 100px;
-            height: 100px;
-        }
-    </style>
 </head>
 <body>
     <div class="container">
         <?php
             if(isset($_SESSION["usuario"])){ ?>
                 <h2>Bienvenid@ <?php echo $_SESSION["usuario"] ?></h2>
-                <a class ="btn btn-danger" href="usuarios/cerrar_sesion.php">Cerrar Sesión</a> <br><br>
+                <a class ="btn btn-danger" href="../usuarios/cerrar_sesion.php">Cerrar Sesión</a> <br><br>
                 <a class ="btn btn-info" href="colecciones/coleccion.php">Coleccion</a>
         <?php }else{ ?>
-                <a class ="btn btn-danger" href="usuarios/iniciar_sesion.php">Iniciar Sesión</a>
+                <a class ="btn btn-danger" href="../usuarios/iniciar_sesion.php">Iniciar Sesión</a>
         <?php }
             //Recibiendo el ID del manga
             $id_manga = $_GET["id_manga"];
+            $pagina = $_GET["page"];
+
 
             $url = "https://api.jikan.moe/v4/manga/$id_manga";//Link de la conexion
 
@@ -43,8 +40,8 @@
             $datos = json_decode($respuesta, true);
             $manga = $datos["data"];
         ?>
-
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <!-- Barra de navegación-->
+        <nav class="mt-2 navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
                 <a class="navbar-brand" href="../index.php">Inicio</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,7 +50,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#">Home</a>
+                            <a class="nav-link active" aria-current="page" href="../index.php?page=<?php echo $pagina ?>">Regresar</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Link</a>
@@ -71,12 +68,26 @@
                 </div>
             </div>
         </nav>
-
+        <!-- Presentación de cada manga-->
         <div class="card mb-3 p-5" style="max-width: auto;">
             <div class="row g-0">
+                <div class="col offset-8">
+                    <h1>Score: <?php echo $manga["score"]?></h1>
+                </div>
                 <div class="col-md-4">
                     <img src="<?php echo $manga["images"]["jpg"]["image_url"] ?>" class="img-fluid rounded-start" alt="<?php echo $manga["titles"][0]["title"]?>">
+                    <?php //SI no estás registrado no puedes puntuar
+                        if(isset($_SESSION["usuario"])){ ?>
+                            <div class="radio-input me-5">
+                                <input value="value-1" name="value-radio" id="value-1" type="radio" class="star s1"/>
+                                <input value="value-2" name="value-radio" id="value-2" type="radio" class="star s2"/>
+                                <input value="value-3" name="value-radio" id="value-3" type="radio" class="star s3"/>
+                                <input value="value-4" name="value-radio" id="value-4" type="radio" class="star s4"/>
+                                <input value="value-5" name="value-radio" id="value-5" type="radio" class="star s5"/>
+                            </div>
+                    <?php } ?>
                 </div>
+
                 <div class="col-md-8">
                     <div class="card-body">
                         <h2 class="card-title"><?php echo $manga["titles"][0]["title"]?></h2>
@@ -85,16 +96,26 @@
                     </div>
                 </div>
             </div>
-
-            <div class="card" style="width: 18rem;">
-                <div class="card-body">
-                    <h5 class="card-title">Autor</h5>
-                    <h6 class="card-subtitle mb-2 text-body-secondary"><?php echo $manga["authors"][0]["name"]?></h6>
-                    <p class="card-text">Publicación: <?php echo $manga["serializations"][0]["name"]?></p>
-                    <a href="#" class="card-link">Another link</a>
+            <!-- Presentación del autor-->
+            <div class="row mt-5">
+                <div class="col-4 card" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">Author</h5>
+                        <h6 class="card-subtitle mb-2 text-body-secondary"><?php echo $manga["authors"][0]["name"]?></h6>
+                        <p class="card-text">Serialization: <?php echo $manga["serializations"][0]["name"]?></p>
+                        <a href="<?php echo $manga["serializations"][0]["url"]?>" target="_blank" class="card-link">Published Manga</a>
+                    </div>
+                </div>
+                <div class="col-6 offset-6 card" style="width: 18rem;">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Rank: <?php echo $manga["rank"]?></li>
+                        <li class="list-group-item">Popularity: <?php echo $manga["popularity"]?></li>
+                        <li class="list-group-item">Chapters: <?php echo $manga["chapters"]?></li>
+                        <li class="list-group-item">Volumes: <?php echo $manga["volumes"]?></li>
+                        <li class="list-group-item">Favorites: <?php echo $manga["favorites"]?></li>
+                    </ul>
                 </div>
             </div>
-
         </div>
 
     </div>
