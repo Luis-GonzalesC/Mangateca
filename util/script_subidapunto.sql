@@ -14,15 +14,17 @@ CREATE TABLE mangas(
     autor VARCHAR(100),
     capitulos INT,
     volumen INT,
-    score INT,
-    fecha_agregada DATE
+    score FLOAT,
+    fecha_agregada DATE,
+    imagen VARCHAR(255)
 );
-
+SELECT * FROM mangas;
 CREATE TABLE coleccion(
 	id INT PRIMARY KEY AUTO_INCREMENT,
 	id_usuario INT,
 	CONSTRAINT FK_COLECCION_USUARIO FOREIGN KEY (id_usuario) REFERENCES usuarios(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
 
 CREATE TABLE pertenece(
 	id_manga INT,
@@ -30,7 +32,7 @@ CREATE TABLE pertenece(
 	CONSTRAINT FK_PERTENECE_MANGA FOREIGN KEY (id_manga) REFERENCES mangas(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT FK_PERTENECE_COLECCION FOREIGN KEY (id_coleccion) REFERENCES coleccion(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
-
+SELECT * FROM favoritos;
 CREATE TABLE favoritos(
 	id INT PRIMARY KEY AUTO_INCREMENT,
 	id_usuario INT,
@@ -38,3 +40,5 @@ CREATE TABLE favoritos(
     CONSTRAINT FK_FAVORITO_USUARIO FOREIGN KEY (id_usuario) REFERENCES usuarios(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT FK_FAVORITO_MANGA FOREIGN KEY (id_manga) REFERENCES mangas(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+SELECT favoritos.id_manga FROM favoritos JOIN mangas ON favoritos.id_manga = mangas.id WHERE titulo = "One Piece";
