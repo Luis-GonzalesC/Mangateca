@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Estoy en COle</h1>
+        <h1>Estoy en Cole</h1>
 
         <!-- Barra de navegación -->
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
