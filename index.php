@@ -65,20 +65,29 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <?php
+                        if(isset($_SESSION["usuario"])){ ?>
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="favoritos/index.php">Favoritos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="colecciones/index.php">Coleccion</a>
+                            </li>
+                    <?php } ?>
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="favoritos/index.php">Favoritos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="colecciones/index.php">Coleccion</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Dropdown</a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Action</a></li>
-                                <li><a class="dropdown-item" href="#">Another action</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="#">Something else here</a></li>
-                            </ul>
+                        <button id="btn-message" class="button-message">
+                            <div class="content-avatar">
+                                <div class="status-user"></div>
+                                <div class="avatar">
+                                    <svg class="user-img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12,12.5c-3.04,0-5.5,1.73-5.5,3.5s2.46,3.5,5.5,3.5,5.5-1.73,5.5-3.5-2.46-3.5-5.5-3.5Zm0-.5c1.66,0,3-1.34,3-3s-1.34-3-3-3-3,1.34-3,3,1.34,3,3,3Z"></path></svg>
+                                </div>
+                            </div>
+                            <div class="notice-content">
+                                <div class="username">Jessica Sanders</div>
+                                <div class="lable-message">Message<span class="number-message">3</span></div>
+                                <div class="user-id">@jessisanders</div>
+                            </div>
+                        </button>
                         </li>
                     </ul>
                 </div>

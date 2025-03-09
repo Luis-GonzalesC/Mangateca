@@ -12,9 +12,28 @@
         require('../util/conexion.php');//Importando la conexion php del servidor (BBDD)
 
         session_start(); //Para recuperar lo que sea iniciado porque no podemos acceder a ese valor
+        if(!isset($_SESSION["usuario"])){
+            header("location: ../usuarios/iniciar_sesion.php");
+            exit;
+        }
     ?>
 </head>
 <body>
+    <?php
+        if($_SERVER["REQUEST_METHOD"] == "POST"){
+            $id_manga = $_POST["id_manga"];
+
+            #1. Prepare
+            $sql = $_conexion -> prepare("DELETE FROM mangas where id = ?");
+
+            #2. Binding
+            $sql -> bind_param("i", $id_manga);
+
+            #3. Execute
+            $sql -> execute();
+        }
+    ?>
+
     <div class="container">
         <?php
             if(isset($_SESSION["usuario"])){ ?>
@@ -23,8 +42,14 @@
         <?php }else{ ?>
                 <a class ="btn btn-danger" href="../usuarios/iniciar_sesion.php">Iniciar Sesión</a>
         <?php }
-        
-            $sql = "SELECT mangas.titulo, mangas.id, mangas.imagen FROM pertenece JOIN mangas ON pertenece.id_manga = mangas.id ORDER BY mangas.titulo";
+            $mi_usuario = $_SESSION["usuario"];
+            $sql = "SELECT mangas.titulo, mangas.id, mangas.imagen, mangas.score, mangas.fecha_agregada FROM pertenece
+                    JOIN mangas ON pertenece.id_manga = mangas.id
+                    WHERE pertenece.id_coleccion = 
+                        (SELECT id FROM coleccion WHERE id_usuario = /*Sacamos la ID de colección*/
+                            (SELECT id FROM usuarios WHERE username = '$mi_usuario') /*Sacamos el ID del usuario LOGUEADO*/
+                        )
+                    ORDER BY mangas.titulo";
             $resultado = $_conexion -> query($sql); // => Devuelve un objeto
         ?>
         <!-- Barra de navegación -->
@@ -36,9 +61,13 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="../favoritos/index.php">Favoritos</a>
-                        </li>
+                    <?php
+                        if(isset($_SESSION["usuario"])){ ?>
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="../favoritos/index.php">Favoritos</a>
+                            </li>
+                    <?php } ?>
+                        
                         <li class="nav-item">
                             <a class="nav-link" href="#">Link</a>
                         </li>
@@ -64,8 +93,17 @@
                         <img class="card-img-top" src="<?php echo $fila["imagen"]?>" alt="<?php echo $fila["titulo"]?>">
                         <div class="card-body">
                             <h3 class="card-text"><?php echo $fila["titulo"]?></h3>
+                            <p class="card-subtitle mb-2 text-body-secondary">Puntuación: <?php echo $fila["score"]?></p>
+                            <p class="card-subtitle mb-2 text-body-secondary">Fecha agregada: <?php echo $fila["fecha_agregada"]?></p>
+
                         </div>
-                        
+                        <div class="col">
+                            <form action="" method="post">
+                                <input type="hidden" name ="id_manga" value="<?php echo $fila["id"]?>">
+                                <input class="btn btn-danger" type="submit" value="Borrar Colección">
+                            </form>
+                            <a class="btn btn-primary mt-2 mb-2" href="../mangas/editar_manga.php?id_manga=<?php echo $fila["id"]?>">Editar Colección</a>
+                        </div>
                     </div>
             <?php } ?>
         </div>

@@ -12,6 +12,10 @@
         require('../util/conexion.php');//Importando la conexion php del servidor (BBDD)
 
         session_start(); //Para recuperar lo que sea iniciado porque no podemos acceder a ese valor
+        if(!isset($_SESSION["usuario"])){
+            header("location: ../usuarios/iniciar_sesion.php");
+            exit;
+        }
     ?>
 </head>
 <body>
@@ -36,8 +40,11 @@
         <?php }else{ ?>
                 <a class ="btn btn-danger" href="../usuarios/iniciar_sesion.php">Iniciar Sesión</a>
         <?php }
-
-            $sql = "SELECT mangas.titulo, mangas.imagen, mangas.id FROM favoritos JOIN mangas ON favoritos.id_manga = mangas.id ORDER BY favoritos.id";
+            $mi_usuario = $_SESSION["usuario"];
+            $sql = "SELECT mangas.titulo, mangas.imagen, mangas.id FROM favoritos 
+                JOIN mangas ON favoritos.id_manga = mangas.id
+                WHERE favoritos.id_usuario = (SELECT id FROM usuarios WHERE username = '$mi_usuario')
+                ORDER BY favoritos.id";
             $resultado = $_conexion -> query($sql); // => Devuelve un objeto
 
         ?>
@@ -50,9 +57,12 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="../colecciones/index.php">Coleccion</a>
-                        </li>
+                    <?php
+                        if(isset($_SESSION["usuario"])){ ?>
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="../colecciones/index.php">Coleccion</a>
+                            </li>
+                    <?php } ?>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Link</a>
                         </li>
@@ -91,7 +101,7 @@
                         <td>
                             <form action="" method="post">
                                 <input type="hidden" name="id_manga" value="<?php echo $fila["id"] ?>">
-                                <input class="btn btn-danger" type="submit" value="Borrar">
+                                <input class="btn btn-danger" type="submit" value="Borrar de Favoritos">
                             </form>
                         </td>
                 <?php  echo "<tr>";

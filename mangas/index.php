@@ -65,12 +65,15 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="../favoritos/index.php">Favoritos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="../colecciones/index.php">Colección</a>
-                        </li>
+                    <?php
+                        if(isset($_SESSION["usuario"])){ ?>
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="../favoritos/index.php">Favoritos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="../colecciones/index.php">Coleccion</a>
+                            </li>
+                    <?php } ?>
                         <li class="nav-item">
                             <a class="nav-link active" aria-current="page" href="../index.php?page=<?php echo $pagina ?>">Regresar</a>
                         </li>
