@@ -16,6 +16,27 @@
     ?>
 </head>
 <body>
+    <?php
+        if($_SERVER["REQUEST_METHOD"] == "POST"){
+            $mi_usuario = $_SESSION['usuario'];
+            $titulo = $_POST["titulo"];
+
+            if(isset($titulo) && isset($mi_usuario)){
+                //Saco el ID del usuario
+                $consulta_usuario = "SELECT id FROM usuarios WHERE username = '$mi_usuario'";
+                $id_usuario = $_conexion -> query($consulta_usuario);
+                $resultado1 = $id_usuario->fetch_array()[0]; //Coger el valor de la consulta
+                //Saco el id de manga
+                $consulta_manga = "SELECT id FROM mangas WHERE titulo = '$titulo'";
+                $id_manga = $_conexion -> query($consulta_manga);
+                $resultado2 = $id_manga->fetch_array()[0]; //Coger el valor de la consulta
+
+                //Insertamos en la tabla pertenece ambos ID
+                $consulta_favoritos = "INSERT INTO favoritos (id_usuario, id_manga) VALUES ($resultado1, $resultado2)";
+                $_conexion -> query($consulta_favoritos);
+            }
+        }
+    ?>
     <div class="container">
         <?php
             if(isset($_SESSION["usuario"])){ ?>
@@ -50,10 +71,10 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="../index.php?page=<?php echo $pagina ?>">Regresar</a>
+                            <a class="nav-link active" aria-current="page" href="../favoritos/index.php">Favoritos</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Link</a>
+                            <a class="nav-link active" aria-current="page" href="../index.php?page=<?php echo $pagina ?>">Regresar</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Dropdown</a>
@@ -73,6 +94,24 @@
             <div class="row g-0">
                 <div class="col offset-8">
                     <h1>Score: <?php echo $manga["score"]?></h1>
+                    <?php //SI no estás registrado no puedes agregar a favoritos
+                        if(isset($_SESSION["usuario"])){ //Comprobado si el usuario existe
+                            $titulillo = $manga["titles"][0]["title"];
+                            $sql = "SELECT titulo FROM mangas WHERE titulo = '$titulillo'";
+                            $resultado = $_conexion -> query($sql);
+                            $titulo = $resultado->fetch_array(); //Coger el valor de la consulta 
+                            if($titulo != null || $titulo != ''){ //Comprando si el título está vacio y no está agregado a los mangas
+                                $sql = "SELECT favoritos.id_manga FROM favoritos JOIN mangas ON favoritos.id_manga = mangas.id WHERE titulo = '$titulillo'";
+                                $resultado = $_conexion -> query($sql);
+                                $id_manga = $resultado->fetch_array(); //Coger el valor de la consulta 
+                                if($id_manga == '' || $id_manga == null){ //Comprobando si el manga está YA agregado a favoritos?>
+                                    <form action="" method="post">
+                                        <input type="hidden" name ="titulo" value="<?php echo $manga["titles"][0]["title"]?>">
+                                        <input type="submit" value="Agregar a Favoritos">
+                                    </form>
+                    <?php       }else echo "<input type='submit' disabled value='Agregado a Favoritos'>"; 
+                            }
+                        } ?>
                 </div>
                 <div class="col-md-4">
                     <img src="<?php echo $manga["images"]["jpg"]["image_url"] ?>" class="img-fluid rounded-start" alt="<?php echo $manga["titles"][0]["title"]?>">

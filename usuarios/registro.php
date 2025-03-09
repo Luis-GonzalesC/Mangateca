@@ -67,15 +67,13 @@
 
                 $sql -> execute();
 
-
-                $id_usuario = $_conexion -> prepare("SELECT id FROM usuarios WHERE username='$usuario'");
-                $sql -> execute();
-
-                $sql = $_conexion -> prepare("INSERT INTO coleccion (id_usuario) VALUES (?)");
-
-                $sql -> bind_param("sss", $usuario, $correo, $contrasena_cifrada);
-
-                $sql -> execute();
+                //Tomando el ID del usuario para agregarlo en su colección correspondiente
+                $consulta_usuario = "SELECT id FROM usuarios WHERE username='$usuario'";
+                $id_usuario = $_conexion -> query($consulta_usuario);
+                $resultado = $id_usuario->fetch_array()[0]; //Coger el valor de la consulta
+                //Agregando el usuario a la colección
+                $consulta_coleccion = "INSERT INTO coleccion (id_usuario) VALUES ($resultado)";
+                $_conexion -> query($consulta_coleccion);
             }
             
         }

@@ -16,27 +16,63 @@
     <link rel="stylesheet" href="estilos/inicio.css">
 </head>
 <body>
+    <?php
+        if($_SERVER["REQUEST_METHOD"] == "POST"){
+            $titulo = $_POST["titulo"];
+            $autor = $_POST["autor"];
+            if($_POST["capitulos"] != '') $capitulos = $_POST["capitulos"];
+            else $capitulos = 0;
+            if($_POST["volumen"] != '') $volumen = $_POST["volumen"];
+            else $volumen = 0;
+            $score = $_POST["score"];
+            $fecha = $_POST["fecha"];
+            $imagen = $_POST["imagen"];
+
+            $mi_usuario = $_SESSION['usuario'];
+
+            if(isset($titulo) && isset($autor) && isset($capitulos) && isset($volumen) && isset($score) && isset($fecha) && isset($imagen)){
+
+                //agregamos el manga a nuestra BBDD
+                $sql = "INSERT INTO mangas (titulo, autor, capitulos, volumen, score, fecha_agregada, imagen) 
+                            VALUES ('$titulo', '$autor', $capitulos, $volumen, $score, '$fecha', '$imagen')";
+                $_conexion -> query($sql);
+
+                //Sacamos el id de manga filtrando por el titulo
+                $consulta_manga = "SELECT id FROM mangas WHERE titulo = '$titulo'";
+                $id_manga = $_conexion -> query($consulta_manga);
+                $resultado1 = $id_manga->fetch_array()[0]; //Coger el valor de la consulta
+                
+                //Sacamos el id de colección haciendo una unión con la tabla de usuarios
+                $consulta_coleccion = "SELECT coleccion.id FROM coleccion JOIN usuarios ON coleccion.id_usuario = usuarios.id WHERE username = '$mi_usuario'";
+                $id_coleccion = $_conexion -> query($consulta_coleccion);
+                $resultado2 = $id_coleccion->fetch_array()[0]; //Coger el valor de la consulta
+
+                //Insertamos en la tabla PERTENECE ambos ID
+                $consulta_pertenece = "INSERT INTO pertenece (id_manga, id_coleccion) VALUES ($resultado1, $resultado2)";
+                $_conexion -> query($consulta_pertenece);
+            }
+        }
+    ?>
+
     <div class="container">
         <?php
             if(isset($_SESSION["usuario"])){ ?>
                 <h2>Bienvenid@ <?php echo $_SESSION["usuario"] ?></h2>
                 <a class ="btn btn-danger" href="usuarios/cerrar_sesion.php">Cerrar Sesión</a> <br><br>
-                <a class ="btn btn-info" href="colecciones/coleccion.php">Coleccion</a>
-                <a class ="btn btn-info" href="figuras/index.php">Figura</a>
         <?php }else{ ?>
                 <a class ="btn btn-danger" href="usuarios/iniciar_sesion.php">Iniciar Sesión</a>
         <?php } ?>
         <!-- Barra de navegación -->
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">Navbar</a>
+                <a class="navbar-brand" href="index.php">Inicio</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#">Home</a>
+                            <a class="nav-link active" aria-current="page" href="favoritos/index.php">Favoritos</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Link</a>
@@ -69,25 +105,36 @@
            $datos = json_decode($respuesta, true);
            $mangas = $datos;
 
-           $existe_pagina = $mangas["pagination"]["has_next_page"];
-
+           $existe_pagina = $mangas["pagination"]["has_next_page"];//Comprobar si existe una siguiente página o no (true o false)
         ?>
         <div class="row text-center">
             <?php
                 foreach ($mangas["data"] as $manga) { ?>
                     <div class="col-3 card m-1" style="width: 19rem;">
                         <a href="mangas/index.php?id_manga=<?php echo $manga["mal_id"]?>&page=<?php echo $pagina ?>">
-                            <img class="card-img-top" src="<?php echo $manga["images"]["jpg"]["image_url"];?>" alt="<?php echo $manga["titles"][0]["title"]?>">
+                            <img class="card-img-top" style="width: 255px; height: 350px" src="<?php echo $manga["images"]["jpg"]["image_url"];?>" alt="<?php echo $manga["titles"][0]["title"]?>">
                         </a>
                         <div class="card-body">
                             <h3 class="card-text"><?php echo $manga["titles"][0]["title"]?></h3>
                         </div>
-                        <?php if(isset($_SESSION["usuario"])){ ?>
-                            <form action="" method="get">
-                                
-                                <input type="submit" value="Agregar">
-                            </form>
-                        <?php } ?>
+                        <?php if(isset($_SESSION["usuario"])){ 
+                                $titulillo = $manga["titles"][0]["title"];
+                                $sql = "SELECT titulo FROM mangas WHERE titulo = '$titulillo'";
+                                $resultado = $_conexion -> query($sql);
+                                $titulo = $resultado->fetch_array(); //Coger el valor de la consulta
+                                if($titulo === null || $titulo === ''){ ?>
+                                    <form action="" method="post">
+                                        <input type="hidden" name ="titulo" value="<?php echo $manga["titles"][0]["title"]?>">
+                                        <input type="hidden" name ="autor" value="<?php echo $manga["authors"][0]["name"]?>">
+                                        <input type="hidden" name ="capitulos" value="<?php echo $manga["chapters"]?>">
+                                        <input type="hidden" name ="volumen" value="<?php echo $manga["volumes"]?>">
+                                        <input type="hidden" name ="score" value="<?php echo $manga["score"]?>">
+                                        <input type="hidden" name ="fecha" value="<?php echo date("Y-m-d")?>">
+                                        <input type="hidden" name ="imagen" value="<?php echo $manga["images"]["jpg"]["image_url"]?>">
+                                        <input type="submit" value="Agregar">
+                                    </form>
+                        <?php   }
+                            } ?>
                     </div>
             <?php } ?>
         </div>
