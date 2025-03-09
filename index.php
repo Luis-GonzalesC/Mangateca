@@ -37,18 +37,12 @@
                             VALUES ('$titulo', '$autor', $capitulos, $volumen, $score, '$fecha', '$imagen')";
                 $_conexion -> query($sql);
 
-                //Sacamos el id de manga filtrando por el titulo
-                $consulta_manga = "SELECT id FROM mangas WHERE titulo = '$titulo'";
-                $id_manga = $_conexion -> query($consulta_manga);
-                $resultado1 = $id_manga->fetch_array()[0]; //Coger el valor de la consulta
-                
-                //Sacamos el id de colección haciendo una unión con la tabla de usuarios
-                $consulta_coleccion = "SELECT coleccion.id FROM coleccion JOIN usuarios ON coleccion.id_usuario = usuarios.id WHERE username = '$mi_usuario'";
-                $id_coleccion = $_conexion -> query($consulta_coleccion);
-                $resultado2 = $id_coleccion->fetch_array()[0]; //Coger el valor de la consulta
-
                 //Insertamos en la tabla PERTENECE ambos ID
-                $consulta_pertenece = "INSERT INTO pertenece (id_manga, id_coleccion) VALUES ($resultado1, $resultado2)";
+                $consulta_pertenece = "INSERT INTO pertenece (id_manga, id_coleccion) 
+                    VALUES (
+                        (SELECT id FROM mangas WHERE titulo = '$titulo'), /*Sacamos el id de manga filtrando por el titulo*/
+                        (SELECT coleccion.id FROM coleccion JOIN usuarios ON coleccion.id_usuario = usuarios.id WHERE username = '$mi_usuario') /*Sacamos el id de colección haciendo una unión con la tabla de usuarios*/
+                    )";
                 $_conexion -> query($consulta_pertenece);
             }
         }
@@ -75,7 +69,7 @@
                             <a class="nav-link active" aria-current="page" href="favoritos/index.php">Favoritos</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Link</a>
+                            <a class="nav-link active" aria-current="page" href="colecciones/index.php">Coleccion</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Dropdown</a>
@@ -90,7 +84,7 @@
                 </div>
             </div>
         </nav>
-        <h2>Listado de Figuras</h2>
+        <h2>Listado de Mangas</h2>
         <?php
             if(!isset($_GET["page"])) $pagina = 1;
             else $pagina = $_GET["page"];
@@ -117,7 +111,7 @@
                         <div class="card-body">
                             <h3 class="card-text"><?php echo $manga["titles"][0]["title"]?></h3>
                         </div>
-                        <?php if(isset($_SESSION["usuario"])){ 
+                        <?php if(isset($_SESSION["usuario"])){ //Comprobando si mi usuario existe
                                 $titulillo = $manga["titles"][0]["title"];
                                 $sql = "SELECT titulo FROM mangas WHERE titulo = '$titulillo'";
                                 $resultado = $_conexion -> query($sql);

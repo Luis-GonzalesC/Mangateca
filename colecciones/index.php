@@ -5,11 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Colecciones</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <?php
+        error_reporting( E_ALL );
+        ini_set( "display_errors", 1);
+
+        require('../util/conexion.php');//Importando la conexion php del servidor (BBDD)
+
+        session_start(); //Para recuperar lo que sea iniciado porque no podemos acceder a ese valor
+    ?>
 </head>
 <body>
     <div class="container">
-        <h1>Estoy en Cole</h1>
-
+        <?php
+            if(isset($_SESSION["usuario"])){ ?>
+                <h2>Bienvenid@ <?php echo $_SESSION["usuario"] ?></h2>
+                <a class ="btn btn-danger" href="../usuarios/cerrar_sesion.php">Cerrar Sesión</a> <br><br>
+        <?php }else{ ?>
+                <a class ="btn btn-danger" href="../usuarios/iniciar_sesion.php">Iniciar Sesión</a>
+        <?php }
+        
+            $sql = "SELECT mangas.titulo, mangas.id, mangas.imagen FROM pertenece JOIN mangas ON pertenece.id_manga = mangas.id ORDER BY mangas.titulo";
+            $resultado = $_conexion -> query($sql); // => Devuelve un objeto
+        ?>
         <!-- Barra de navegación -->
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
@@ -38,6 +55,20 @@
                 </div>
             </div>
         </nav>
+
+        <div class="row text-center mt-5">
+            <h1>Lista de Colección</h1>
+            <?php
+                while($fila = $resultado -> fetch_assoc()){ ?>
+                    <div class="col-3 card m-1" style="width: 19rem;">
+                        <img class="card-img-top" src="<?php echo $fila["imagen"]?>" alt="<?php echo $fila["titulo"]?>">
+                        <div class="card-body">
+                            <h3 class="card-text"><?php echo $fila["titulo"]?></h3>
+                        </div>
+                        
+                    </div>
+            <?php } ?>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

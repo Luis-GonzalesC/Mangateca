@@ -22,17 +22,12 @@
             $titulo = $_POST["titulo"];
 
             if(isset($titulo) && isset($mi_usuario)){
-                //Saco el ID del usuario
-                $consulta_usuario = "SELECT id FROM usuarios WHERE username = '$mi_usuario'";
-                $id_usuario = $_conexion -> query($consulta_usuario);
-                $resultado1 = $id_usuario->fetch_array()[0]; //Coger el valor de la consulta
-                //Saco el id de manga
-                $consulta_manga = "SELECT id FROM mangas WHERE titulo = '$titulo'";
-                $id_manga = $_conexion -> query($consulta_manga);
-                $resultado2 = $id_manga->fetch_array()[0]; //Coger el valor de la consulta
-
-                //Insertamos en la tabla pertenece ambos ID
-                $consulta_favoritos = "INSERT INTO favoritos (id_usuario, id_manga) VALUES ($resultado1, $resultado2)";
+                //Agregar a la tabla favoritos
+                $consulta_favoritos = "INSERT INTO favoritos (id_usuario, id_manga) 
+                    VALUES (
+                        (SELECT id FROM usuarios WHERE username = '$mi_usuario'), /*Saco el ID del usuario*/
+                        (SELECT id FROM mangas WHERE titulo = '$titulo') /*Saco el id de manga*/
+                    )";
                 $_conexion -> query($consulta_favoritos);
             }
         }
@@ -72,6 +67,9 @@
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
                             <a class="nav-link active" aria-current="page" href="../favoritos/index.php">Favoritos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="../colecciones/index.php">Colección</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link active" aria-current="page" href="../index.php?page=<?php echo $pagina ?>">Regresar</a>

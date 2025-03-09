@@ -19,9 +19,6 @@
         <?php
             if($_SERVER["REQUEST_METHOD"] == "POST"){
                 $id_manga = $_POST["id_manga"];
-                //echo "<h1>$id_anime</h1>";
-                /*$sql = "DELETE FROM productos WHERE id_producto = '$id_producto'";
-                $_conexion -> query($sql);*/
 
                 #1. Prepare
                 $sql = $_conexion -> prepare("DELETE FROM favoritos WHERE id_manga = ?");
@@ -75,7 +72,7 @@
 
         <h2>Listado de Favoritos</h2>
 
-        <table class="table table-striped">
+        <table class="table table-striped text-center align-middle">
             <thead class="table-primary">
                 <tr>
                     <th>Nombre del Manga</th>
