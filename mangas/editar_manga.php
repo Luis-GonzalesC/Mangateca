@@ -70,7 +70,7 @@
             $resultado = $sql -> get_result();
             $manga = $resultado -> fetch_assoc();
         ?>
-        <h1>ESTELAAAAAAAAAAAAAAAA</h1>
+        <h1>Editar Manga</h1>
         <form class="col-4" action="" method="post">
             <div class="mb-3">
                     <label class="form-label">ID manga</label>
