@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="../estilos/inicio.css">
     <link rel="stylesheet" href="../estilos/favoritos.css">
+    <link rel="stylesheet" href="../estilos/boton_dia_noche.css">
     <?php
         error_reporting( E_ALL );
         ini_set( "display_errors", 1);
@@ -19,9 +20,31 @@
             exit;
         }
     ?>
+    <script>
+        function cambiar () {
+            let padre = document.querySelector("html");
+            if (padre.getAttribute("data-bs-theme") == "dark") padre.setAttribute("data-bs-theme", "light");
+            else if (padre.getAttribute("data-bs-theme") == "light") padre.setAttribute("data-bs-theme", "dark");
+        }
+    </script>
+    <style>
+        .encabezado{
+            --bs-table-bg: #FFFFE0;
+        }
+        th {
+            --bs-table-color: #666;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
+        <div class="contenedor">
+            <div class="toggle">
+                <input type="checkbox" onclick="cambiar()">
+                <span class="button"></span>
+                <span class="label">☼</span>
+            </div>
+        </div>
         <?php
             if(isset($_SESSION["usuario"])){
                 $mi_usuario = $_SESSION['usuario'];
@@ -123,7 +146,7 @@
         <h2>Listado de Favoritos</h2>
 
         <table class="table table-striped text-center align-middle">
-            <thead class="table-primary">
+            <thead class="encabezado">
                 <tr>
                     <th>Nombre del Manga</th>
                     <th>Imagen</th>

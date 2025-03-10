@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="../estilos/inicio.css">
     <link rel="stylesheet" href="../estilos/boton_regresar.css">
     <link rel="stylesheet" href="../estilos/favoritos.css">
+    <link rel="stylesheet" href="../estilos/boton_dia_noche.css">
     <?php
         error_reporting( E_ALL );
         ini_set( "display_errors", 1);
@@ -17,6 +18,13 @@
 
         session_start(); //Para recuperar lo que sea iniciado porque no podemos acceder a ese valor
     ?>
+    <script>
+        function cambiar () {
+            let padre = document.querySelector("html");
+            if (padre.getAttribute("data-bs-theme") == "dark") padre.setAttribute("data-bs-theme", "light");
+            else if (padre.getAttribute("data-bs-theme") == "light") padre.setAttribute("data-bs-theme", "dark");
+        }
+    </script>
 </head>
 <body>
     <?php
@@ -40,6 +48,13 @@
         }
     ?>
     <div class="container">
+        <div class="contenedor">
+            <div class="toggle">
+                <input type="checkbox" onclick="cambiar()">
+                <span class="button"></span>
+                <span class="label">☼</span>
+            </div>
+        </div>
         <?php 
             //Recibiendo el ID del manga
             $id_manga = $_GET["id_manga"];

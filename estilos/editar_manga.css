@@ -1,4 +1,8 @@
-/* From Uiverse.io by xueyuantan */ 
+.regresar{
+    position: absolute;
+    margin-left: 15rem;
+    margin-top: -3rem;
+}
 button {
     width: 9em;
     height: 3em;

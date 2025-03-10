@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="../estilos/editar_manga.css">
     <link rel="stylesheet" href="../estilos/inicio.css">
+    <link rel="stylesheet" href="../estilos/boton_dia_noche.css">
     <?php
         error_reporting( E_ALL );
         ini_set( "display_errors", 1);
@@ -19,9 +20,23 @@
             exit;
         }
     ?>
+    <script>
+        function cambiar () {
+            let padre = document.querySelector("html");
+            if (padre.getAttribute("data-bs-theme") == "dark") padre.setAttribute("data-bs-theme", "light");
+            else if (padre.getAttribute("data-bs-theme") == "light") padre.setAttribute("data-bs-theme", "dark");
+        }
+    </script>
 </head>
 <body>
     <div class="container">
+        <div class="contenedor">
+            <div class="toggle">
+                <input type="checkbox" onclick="cambiar()">
+                <span class="button"></span>
+                <span class="label">☼</span>
+            </div>
+        </div>
         <?php
             if(isset($_SESSION["usuario"])){
                 $mi_usuario = $_SESSION['usuario'];
@@ -181,13 +196,16 @@
                     <?php if(isset($err_fecha_agregada)) echo "<div class='alert alert-danger'>$err_fecha_agregada</div>"?>
                     <input class="form-control" type="date" name="fecha" value="<?php echo $manga["fecha_agregada"]?>">
             </div>
-            <div class="mt-4">
+            <div class="mt-5">
                     <input class="modificar" type="submit" value="Modificar">
-                    <button class="offset-2"><a href="../colecciones/index.php">Regresar</a></button>
-                    
             </div>
-
         </form>
+        <div class="regresar">
+            <button>
+                <a href="../colecciones/index.php">Regresar</a>
+            </button>
+        </div>
+
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
