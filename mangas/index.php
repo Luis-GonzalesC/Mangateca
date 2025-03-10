@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="../estilos/mangas.css">
     <link rel="stylesheet" href="../estilos/inicio.css">
     <link rel="stylesheet" href="../estilos/boton_regresar.css">
+    <link rel="stylesheet" href="../estilos/favoritos.css">
     <?php
         error_reporting( E_ALL );
         ini_set( "display_errors", 1);
@@ -144,11 +145,27 @@
                                 if($id_manga == '' || $id_manga == null){ //Comprobando si el manga está YA agregado a favoritos?>
                                     <form action="" method="post">
                                         <input type="hidden" name ="titulo" value="<?php echo $manga["titles"][0]["title"]?>">
-                                        <input type="submit" value="Agregar a Favoritos">
+                                        <button class="bookmarkBtn">
+                                            <span class="IconContainer">
+                                                <svg viewBox="0 0 384 512" height="0.9em" class="icon">
+                                                    <path d="M0 48V487.7C0 501.1 10.9 512 24.3 512c5 0 9.9-1.5 14-4.4L192 400 345.7 507.6c4.1 2.9 9 4.4 14 4.4c13.4 0 24.3-10.9 24.3-24.3V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48z"></path>
+                                                </svg>
+                                            </span>
+                                            <p class="text">Favoritos</p>
+                                        </button>
                                     </form>
-                    <?php       }else echo "<input type='submit' disabled value='Agregado a Favoritos'>"; 
+                    <?php       }else { ?>
+                                <label class="ui-bookmark">
+                                    <div class="bookmark">
+                                        <span class="mb-1">ADDED</span>
+                                        <svg viewBox="0 0 32 32">
+                                            <path d="M27 4v27a1 1 0 0 1-1.625.781L16 24.281l-9.375 7.5A1 1 0 0 1 5 31V4a4 4 0 0 1 4-4h14a4 4 0 0 1 4 4z"></path>
+                                        </svg>
+                                    </div>
+                                </label>
+                    <?php       } 
                             }
-                        } ?>
+                        }?>
                 </div>
                 <div class="col-md-4">
                     <img src="<?php echo $manga["images"]["jpg"]["image_url"] ?>" class="img-fluid rounded-start" alt="<?php echo $manga["titles"][0]["title"]?>">
